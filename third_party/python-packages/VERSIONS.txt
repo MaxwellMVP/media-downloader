@@ -1,0 +1,10 @@
+customtkinter==6.0.0
+pillow==13.0.0
+requests==2.34.2
+mutagen==1.48.1
+darkdetect==0.8.0
+packaging==26.3
+charset-normalizer==3.5.2
+idna==3.20
+urllib3==2.8.0
+certifi==2026.10.23
