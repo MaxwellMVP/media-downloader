@@ -1,9 +1,5 @@
 # Збирання Media Downloader v0.3
 
-Для GitHub Actions і майбутніх підписаних збірок дивись
-[Code signing policy](docs/CODE_SIGNING.md). Workflow **Windows release build**
-збирає обидва EXE; `sign=false` працює без облікового запису SignPath.
-
 Потрібні Windows 10/11 x64, Python 3.12 x64 та Inno Setup 6.6 або новіший.
 Інтерфейс відображається через Microsoft Edge WebView2 Runtime. Він є системним компонентом,
 не входить до збірки, тому має бути встановлений на машині, де запускається застосунок.
