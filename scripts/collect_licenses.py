@@ -5,8 +5,12 @@ import shutil
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
-PACKAGES = ['customtkinter', 'pillow', 'requests', 'mutagen', 'darkdetect',
+PACKAGES = ['pywebview', 'pythonnet', 'clr-loader', 'cffi', 'pycparser', 'bottle',
+            'typing-extensions', 'pillow', 'requests', 'mutagen',
             'packaging', 'charset-normalizer', 'idna', 'urllib3', 'certifi']
+# Wheels that ship no license file. Their name and version go to VERSIONS.txt only;
+# the MIT text must be added by hand to third_party/python-packages/proxy-tools/.
+NO_LICENSE_FILE = ['proxy-tools']
 
 
 def main():
@@ -33,20 +37,18 @@ def main():
         if copied == 0:
             raise RuntimeError(f'No installed license text found for {name}')
         lines.append(f'{name}=={distribution.version}')
+    for name in NO_LICENSE_FILE:
+        lines.append(f'{name}=={metadata.version(name)}  (license text to be added manually)')
     (destination / 'VERSIONS.txt').write_text('\n'.join(lines) + '\n', encoding='utf-8')
     python_license = Path(sys.base_prefix) / 'LICENSE.txt'
-    if python_license.is_file():
-        shutil.copy2(python_license, destination / 'CPython-LICENSE.txt')
-    import tkinter
-    interpreter = tkinter.Tcl()
-    tcl_library = Path(interpreter.eval('info library'))
-    for name, folder in [('Tcl', tcl_library), ('Tk', tcl_library.parent / 'tk8.6')]:
-        for filename in ('license.terms', 'license', 'LICENSE'):
-            path = folder / filename
-            if path.is_file():
-                shutil.copy2(path, destination / (name + '-LICENSE.txt'))
-                break
+    if not python_license.is_file():
+        raise RuntimeError(f'CPython license text not found: {python_license}')
+    shutil.copy2(python_license, destination / 'CPython-LICENSE.txt')
     print(f'Licenses copied: {destination}')
+
+
+if __name__ == '__main__':
+    main()
 
 
 if __name__ == '__main__':

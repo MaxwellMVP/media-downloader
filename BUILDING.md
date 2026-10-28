@@ -1,6 +1,8 @@
 # Збирання Media Downloader v0.3
 
 Потрібні Windows 10/11 x64, Python 3.12 x64 та Inno Setup 6.6 або новіший.
+Інтерфейс відображається через Microsoft Edge WebView2 Runtime. Він є системним компонентом,
+не входить до збірки, тому має бути встановлений на машині, де запускається застосунок.
 Для поточного релізу використано Python 3.12.14, PyInstaller 6.22.3 та Inno Setup 6.7.3.
 
 ## Середовище
@@ -42,7 +44,7 @@ py -3.12 -m venv .venv
 Для збирання лише portable пропусти `--iscc`. Для повторного збирання лише
 інсталятора додай `--skip-portable`; він використає поточний файл у `Portable/`.
 
-Версія береться з `APP_VER` у `app.py`. Скрипт генерує Windows FileVersion і
+Версія береться з `APP_VER` у `mediadl/config.py`. Скрипт генерує Windows FileVersion і
 ProductVersion, збирає EXE, а потім передає ту саму версію Inno Setup.
 
 Результати:

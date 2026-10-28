@@ -3,8 +3,9 @@ from pathlib import Path
 from PyInstaller.utils.hooks import collect_all
 
 root = Path(SPECPATH).resolve().parent
-datas, extra_binaries, hiddenimports = collect_all('customtkinter')
-datas += [(str(root / 'assets'), 'assets'),
+datas, extra_binaries, hiddenimports = collect_all('webview')
+datas += [(str(root / 'web'), 'web'),
+          (str(root / 'assets'), 'assets'),
           (str(root / 'third_party'), 'third_party'),
           (str(root / 'THIRD_PARTY_NOTICES.md'), '.'),
           (str(root / 'LICENSE'), '.')]

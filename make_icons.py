@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
-"""Generate icons: app.ico + platform badge pngs -> assets/"""
+"""Generate icons: app.ico -> assets/, UI pngs -> web/assets/"""
 import os
 import math
 from PIL import Image, ImageDraw
 
-out = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+root = os.path.dirname(os.path.abspath(__file__))
+out = os.path.join(root, "assets")
+# UI images live under web/ so the pywebview server can serve them.
+web_assets = os.path.join(root, "web", "assets")
 os.makedirs(out, exist_ok=True)
+os.makedirs(web_assets, exist_ok=True)
 
 
 def rounded(draw, box, r, fill):
@@ -100,11 +104,11 @@ def folder_icon(size):
 
 # save pngs
 for name, fn, sz in (("yt.png", yt, 128), ("sp.png", sp, 128), ("tt.png", tt, 128), ("folder.png", folder_icon, 64)):
-    fn(sz).save(os.path.join(out, name))
+    fn(sz).save(os.path.join(web_assets, name))
 
 # save app.ico with multiple sizes
 base = 256
 img = app_icon(base)
-img.save(os.path.join(out, "app.png"))
+img.save(os.path.join(web_assets, "app.png"))
 img.save(os.path.join(out, "app.ico"), sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
 print("icons saved to", out)
