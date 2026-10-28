@@ -32,11 +32,20 @@ as MIT-only.
 ## Python runtime and libraries
 
 The build uses CPython 3.12 and packages pinned in `requirements-lock.txt`:
-CustomTkinter, Pillow, requests, mutagen, darkdetect, packaging, charset-normalizer,
-idna, urllib3 and certifi. Mutagen uses GPL terms, certifi uses MPL terms, and
-other packages have their own notices. Their installed license texts are copied
-to `third_party/python-packages/`; CPython and Tcl/Tk texts are also included
-when available from the build environment.
+pywebview (with pythonnet, clr-loader, cffi, pycparser, bottle and typing-extensions
+as its runtime dependencies), proxy-tools, Pillow, requests, mutagen, packaging,
+charset-normalizer, idna, urllib3 and certifi. Mutagen uses GPL terms, certifi uses
+MPL terms, and other packages have their own notices. Their installed license texts
+are copied to `third_party/python-packages/` by `scripts/collect_licenses.py`, which
+fails if a package with a license file ships none. The CPython license text is included
+there as `CPython-LICENSE.txt`.
+
+proxy-tools 0.1.0 is MIT licensed but its wheel ships no license file. The MIT text
+must be placed in `third_party/python-packages/proxy-tools/` before distribution;
+`VERSIONS.txt` marks this as pending.
+
+The user interface is rendered by the Microsoft Edge WebView2 Runtime, which is
+a system component and is not bundled with the application.
 
 PyInstaller's bootloader license has an exception for distributing applications;
 the build tool's license does not replace the application's dependency licenses.

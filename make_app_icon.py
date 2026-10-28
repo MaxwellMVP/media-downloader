@@ -4,6 +4,7 @@ import os
 from PIL import Image
 
 A = os.path.join(os.path.dirname(os.path.abspath(__file__)), "assets")
+W = os.path.join(os.path.dirname(os.path.abspath(__file__)), "web", "assets")
 src = os.path.join(A, "ico.jpg")
 
 try:
@@ -32,7 +33,7 @@ if bbox:
     cut = cut.crop(bbox)
 
 cut = cut.resize((256, 256), Image.LANCZOS)
-cut.save(os.path.join(A, "app.png"))
+cut.save(os.path.join(W, "app.png"))
 cut.save(os.path.join(A, "app.ico"),
          sizes=[(16, 16), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)])
 print("app.ico saved", cut.size)

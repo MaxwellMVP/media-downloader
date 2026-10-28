@@ -1,9 +1,15 @@
 # Windows / Python 3.12: versions used to build v0.3.
-customtkinter==6.0.0
+pywebview==6.2.1
+pythonnet==3.2.1
+clr-loader==0.3.1
+cffi==2.1.1
+pycparser==3.12
+bottle==0.13.4
+proxy-tools==0.1.0
+typing-extensions==4.16.0
 pillow==13.0.0
 requests==2.34.2
 mutagen==1.48.1
-darkdetect==0.8.0
 packaging==26.3
 charset-normalizer==3.5.2
 idna==3.20

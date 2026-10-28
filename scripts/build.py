@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def version():
-    tree = ast.parse((ROOT / 'app.py').read_text(encoding='utf-8-sig'))
+    tree = ast.parse((ROOT / 'mediadl' / 'config.py').read_text(encoding='utf-8-sig'))
     for node in tree.body:
         if isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == 'APP_VER' for t in node.targets):
             return ast.literal_eval(node.value).removeprefix('v')
