@@ -72,6 +72,12 @@ python -m unittest test_app -v
 GitHub Actions запускає Windows unit-тести. Додаткові desktop-перевірки
 вмикаються через `MEDIADL_GUI_TESTS=1`; деталі в `BUILDING.md`.
 
+## Code signing policy
+
+Інтеграцію SignPath підготовлено; production-сертифікат ще не підключений.
+Опубліковані файли v0.3 залишаються без підпису.
+[Політика підпису й налаштування SignPath](docs/CODE_SIGNING.md).
+
 ## Ліцензія
 
 Вихідний код застосунку — [MIT](LICENSE). Сторонні інструменти й бібліотеки

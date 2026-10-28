@@ -28,3 +28,7 @@ Gyan build information: https://www.gyan.dev/ffmpeg/builds/
 yt-dlp: https://github.com/yt-dlp/yt-dlp/tree/2026.10.26
 Deno: https://github.com/denoland/deno/tree/v2.9.8
 spotDL: https://github.com/spotDL/spotify-downloader/tree/v4.6.0
+# Code signing policy
+
+Поточний v0.3 не підписаний. [Політика підпису](https://github.com/MaxwellMVP/media-downloader/blob/main/docs/CODE_SIGNING.md).
+

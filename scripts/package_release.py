@@ -10,7 +10,7 @@ SOURCE_FILES = ['app.py', 'test_app.py', 'make_app_icon.py', 'make_icons.py',
                 'THIRD_PARTY_NOTICES.md', 'CHANGELOG.md', 'requirements.txt',
                 'requirements-lock.txt', 'requirements-build.txt', '.gitignore', '.gitattributes',
                 'build_bin/README.md', 'build_bin/tools.lock.json']
-SOURCE_DIRS = ['assets', 'mediadl', 'packaging', 'scripts', '.github', 'third_party', 'docs']
+SOURCE_DIRS = ['assets', 'web', 'mediadl', 'packaging', 'scripts', '.github', 'third_party', 'docs']
 
 
 def sources():
