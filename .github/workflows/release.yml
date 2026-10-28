@@ -3,8 +3,6 @@ name: Release on version change
 on:
   push:
     branches: [main]
-    paths:
-      - 'mediadl/config.py'
   workflow_dispatch:
 
 concurrency:
@@ -15,7 +13,30 @@ permissions:
   contents: read
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      needed: ${{ steps.version.outputs.needed }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Read version and check for an existing release
+        id: version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version=$(sed -n 's/^APP_VER = "v\([^"]*\)".*/\1/p' mediadl/config.py)
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+(\.[0-9]+)?$ ]]; then echo "Invalid application version: $version"; exit 1; fi
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if gh release view "v$version" --repo "$GITHUB_REPOSITORY" > /dev/null 2>&1; then needed=false; else needed=true; fi
+          echo "needed=$needed" >> "$GITHUB_OUTPUT"
+
   release:
+    needs: check
+    if: needs.check.outputs.needed == 'true'
     runs-on: windows-latest
     timeout-minutes: 45
     permissions:
@@ -30,37 +51,20 @@ jobs:
           cache: pip
       - run: python -m pip install -r requirements-lock.txt -r requirements-build.txt
       - run: python -m unittest test_app -v
-      - name: Read version and check for an existing release
-        id: version
-        shell: pwsh
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          $version = python -c "import sys; sys.path.insert(0, 'scripts'); from build import version; print(version())"
-          if ($LASTEXITCODE -ne 0 -or $version -notmatch '^\d+\.\d+(\.\d+)?$') { throw 'Invalid application version' }
-          "version=$version" >> $env:GITHUB_OUTPUT
-          gh release view "v$version" --repo $env:GITHUB_REPOSITORY *> $null
-          $exists = if ($LASTEXITCODE -eq 0) { 'true' } else { 'false' }
-          "exists=$exists" >> $env:GITHUB_OUTPUT
       - name: Download locked helper tools
-        if: steps.version.outputs.exists == 'false'
         run: python scripts/download_tools.py
       - name: Install Inno Setup
-        if: steps.version.outputs.exists == 'false'
         shell: pwsh
         run: ./scripts/install_inno.ps1
       - name: Build portable and installer
-        if: steps.version.outputs.exists == 'false'
         run: python scripts/build.py --iscc build/inno/ISCC.exe
       - name: Package release files
-        if: steps.version.outputs.exists == 'false'
         run: python scripts/package_release.py
       - name: Publish GitHub release
-        if: steps.version.outputs.exists == 'false'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-          APP_VERSION: ${{ steps.version.outputs.version }}
+          APP_VERSION: ${{ needs.check.outputs.version }}
         run: |
           $dir = "Release/v$env:APP_VERSION"
           $files = @(
