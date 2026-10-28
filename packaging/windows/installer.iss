@@ -10,6 +10,9 @@
 AppId={{F40C76F9-779C-4536-A803-6DD0BD2AC8DF}
 AppName=Media Downloader
 AppVersion={#AppVersion}
+VersionInfoProductName=Media Downloader
+VersionInfoProductVersion={#AppVersion}
+VersionInfoProductTextVersion={#AppVersion}
 AppMutex=Local\MediaDownloader
 AppVerName=Media Downloader v{#AppVersion}
 DefaultDirName={localappdata}\Programs\Media Downloader
