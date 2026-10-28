@@ -1,0 +1,71 @@
+name: Release on version change
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'mediadl/config.py'
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.12'
+          cache: pip
+      - run: python -m pip install -r requirements-lock.txt -r requirements-build.txt
+      - run: python -m unittest test_app -v
+      - name: Read version and check for an existing release
+        id: version
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = python -c "import sys; sys.path.insert(0, 'scripts'); from build import version; print(version())"
+          if ($LASTEXITCODE -ne 0 -or $version -notmatch '^\d+\.\d+(\.\d+)?$') { throw 'Invalid application version' }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          gh release view "v$version" --repo $env:GITHUB_REPOSITORY *> $null
+          $exists = if ($LASTEXITCODE -eq 0) { 'true' } else { 'false' }
+          "exists=$exists" >> $env:GITHUB_OUTPUT
+      - name: Download locked helper tools
+        if: steps.version.outputs.exists == 'false'
+        run: python scripts/download_tools.py
+      - name: Install Inno Setup
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        run: ./scripts/install_inno.ps1
+      - name: Build portable and installer
+        if: steps.version.outputs.exists == 'false'
+        run: python scripts/build.py --iscc build/inno/ISCC.exe
+      - name: Package release files
+        if: steps.version.outputs.exists == 'false'
+        run: python scripts/package_release.py
+      - name: Publish GitHub release
+        if: steps.version.outputs.exists == 'false'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APP_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $dir = "Release/v$env:APP_VERSION"
+          $files = @(
+            "$dir/MediaDownloader-v$env:APP_VERSION-Setup.exe",
+            "$dir/MediaDownloader-v$env:APP_VERSION-Portable.zip",
+            "$dir/MediaDownloader-v$env:APP_VERSION-Source.zip",
+            "$dir/SHA256SUMS.txt")
+          gh release create "v$env:APP_VERSION" @files --repo $env:GITHUB_REPOSITORY --target $env:GITHUB_SHA --title "Media Downloader v$env:APP_VERSION" --generate-notes
