@@ -60,8 +60,8 @@ def main():
     app_version = version()
     output = ROOT / 'Release' / ('v' + app_version)
     output.mkdir(parents=True, exist_ok=True)
+    check_tools()
     if not args.skip_portable:
-        check_tools()
         write_version_info(app_version)
         subprocess.run([sys.executable, '-m', 'PyInstaller', '--noconfirm',
                         str(ROOT / 'packaging/MediaDownloader.spec'),
