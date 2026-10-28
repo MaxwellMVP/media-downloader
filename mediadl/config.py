@@ -8,7 +8,7 @@ import tempfile
 from .messages import MediaError
 
 APP_TITLE = "Media Downloader"
-APP_VER = "v0.3"
+APP_VER = "v0.4"
 
 # Window background (shown before the page paints) and thumbnail placeholder.
 # The rest of the palette lives in web/app.css.
